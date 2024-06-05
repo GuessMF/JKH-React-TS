@@ -7,12 +7,17 @@ export default defineConfig({
   base: '/JKH-React-TS/',
   server: {
     proxy: {
-      '/api': {
-        target: 'https://showroom.eis24.me',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/api/, ''),
-      },
+      '/api': 'http://showroom.eis24.me',
     },
   },
+  // server: {
+  //   proxy: {
+  //     '/api': {
+  //       target: 'https://showroom.eis24.me',
+  //       changeOrigin: true,
+  //       secure: false,
+  //       rewrite: (path) => path.replace(/^\/api/, ''),
+  //     },
+  //   },
+  // },
 });
