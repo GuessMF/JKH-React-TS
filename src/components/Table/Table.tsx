@@ -47,6 +47,17 @@ export default function Table() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
+  const getConfigs = async () => {
+    try {
+      console.log('test');
+
+      console.log(await axios.get('/api/v4/test/meters/?limit=100&offset=0'));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  getConfigs();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
