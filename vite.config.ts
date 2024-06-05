@@ -5,21 +5,14 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   base: '/JKH-React-TS/',
-  // server: {
-  //   proxy: {
-  //     '/api': {
-  //       target: 'http://showroom.eis24.me',
-  //       changeOrigin: true,
-  //       rewrite: (path) => {
-  //         console.log('Rewriting path:', path); // Add this line for debugging
-  //         return path.replace(/^\/api/, '');
-  //       },
-  //       configure: (proxy, options) => {
-  //         proxy.on('proxyReq', (proxyReq, req, res) => {
-  //           console.log('Proxying request:', req.url); // Add this line for debugging
-  //         });
-  //       },
-  //     },
-  //   },
-  // },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://showroom.eis24.me',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
 });

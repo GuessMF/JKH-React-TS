@@ -52,11 +52,9 @@ export default function Table() {
       try {
         const [metersResponse, areasResponse] = await Promise.all([
           axios.get<ApiResponseMeters>(
-            'http://showroom.eis24.me/api/v4/test/meters/?limit=100&offset=0'
+            '/api/v4/test/meters/?limit=100&offset=0'
           ),
-          axios.get<ApiResponseAreas>(
-            'http://showroom.eis24.me/api/v4/test/areas/'
-          ),
+          axios.get<ApiResponseAreas>('/api/v4/test/areas/'),
         ]);
 
         const meters = metersResponse.data.results;
