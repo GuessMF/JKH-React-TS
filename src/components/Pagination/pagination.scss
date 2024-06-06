@@ -1,0 +1,13 @@
+@import '../../assets/style/var';
+
+.pagination {
+  float: right;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  button {
+    padding: 10px;
+    border-radius: 10px;
+    border: black 1px solid;
+  }
+}

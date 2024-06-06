@@ -1,0 +1,18 @@
+@import '../../assets/style/var';
+
+.deleteBtn {
+  background-color: $red100;
+  width: 40px;
+  height: 40px;
+  transition: 0.3s ease background-color;
+  border-radius: 8px;
+  img {
+  }
+  &:hover {
+    background: $red200;
+    img {
+      filter: brightness(0) saturate(100%) invert(18%) sepia(81%)
+        saturate(1817%) hue-rotate(345deg) brightness(100%) contrast(80%);
+    }
+  }
+}

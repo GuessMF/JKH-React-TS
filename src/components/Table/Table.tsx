@@ -1,5 +1,7 @@
 import {useEffect, useState} from 'react';
+import './table.scss';
 import axios from 'axios';
+import Meter from '../Meter/Meter';
 
 // Определяем интерфейс для данных
 interface Meter {
@@ -12,8 +14,8 @@ interface Meter {
   area: {
     id: string;
   };
-  address?: string;
-  house?: string;
+  address: string;
+  house: string;
 }
 
 interface House {
@@ -47,58 +49,60 @@ export default function Table() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const getConfigs = async () => {
-    try {
-      console.log('test');
+  const [page, setPage] = useState<number>(0);
+  const [offset, setOffset] = useState<number>(0);
 
-      console.log(await axios.get('/api/v4/test/meters/?limit=100&offset=0'));
-    } catch (e) {
-      console.log(e);
+  // const getConfigs = async () => {
+  //   try {
+  //     console.log('test');
+
+  //     console.log(await axios.get('/api/v4/test/meters/?limit=20&offset=0'));
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
+  // getConfigs();
+
+  const fetchData = async (page: number) => {
+    const limit = 20;
+    setOffset(page * limit);
+
+    try {
+      const [metersResponse, areasResponse] = await Promise.all([
+        axios.get<ApiResponseMeters>(
+          `/api/v4/test/meters/?limit=${limit}&offset=${offset}`
+        ),
+        axios.get<ApiResponseAreas>('/api/v4/test/areas/'),
+      ]);
+
+      const meters = metersResponse.data.results;
+      const areas = areasResponse.data.results;
+
+      const combinedData = meters.map((meter) => {
+        const area = areas.find((area) => area.id === meter.area.id);
+        return {
+          ...meter,
+          address: area ? area.house.address : 'Адрес не найден',
+          house: area ? area.str_number_full : '',
+        };
+      });
+
+      setData(combinedData);
+      setLoading(false);
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error);
+      } else {
+        setError(new Error('Ошибка'));
+      }
+
+      setLoading(false);
     }
   };
-  getConfigs();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [metersResponse, areasResponse] = await Promise.all([
-          axios.get<ApiResponseMeters>(
-            '/api/v4/test/meters/?limit=100&offset=0'
-          ),
-          axios.get<ApiResponseAreas>('/api/v4/test/areas/'),
-        ]);
-
-        const meters = metersResponse.data.results;
-        const areas = areasResponse.data.results;
-
-        // Объединяем данные счетчиков и областей по id
-
-        // console.log(meters[0].area.id);
-        console.log(meters);
-        const combinedData = meters.map((meter) => {
-          const area = areas.find((area) => area.id === meter.area.id);
-          return {
-            ...meter,
-            address: area ? area.house.address : 'Адрес не найден',
-            house: area ? area.str_number_full : '',
-          };
-        });
-
-        setData(combinedData);
-        setLoading(false);
-      } catch (error) {
-        if (error instanceof Error) {
-          setError(error);
-        } else {
-          setError(new Error('Ошибка'));
-        }
-
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+    fetchData(page);
+  }, [page]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -108,46 +112,74 @@ export default function Table() {
     return <div>Error: {error.message}</div>;
   }
 
+  // const deleteItem = (id: string) => {
+  //   setData((prevData) => prevData.filter((item) => item.id !== id));
+  // };
+
+  // const deleteItem = (id: string) => {
+  //   setData((prevData) => {
+  //     const updatedData = prevData.filter((item) => item.id !== id);
+  //     // Если элементов меньше 20 после удаления, загрузить еще
+  //     if (updatedData.length < 20) {
+  //       fetchData(page);
+  //       setPage((prevPage) => prevPage + 1);
+  //     }
+  //     return updatedData;
+  //   });
+  // };
+  const deleteItem = async (id: string) => {
+    console.log(data.length);
+  };
+
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Index</th>
-          <th>Meter ID</th>
-          <th>Type</th>
-          <th>Date</th>
-          <th>Is automatic</th>
-          <th>Initial Values</th>
-          <th>Description</th>
-          <th>Area ID</th>
-          <th>Address</th>
-          <th>House</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((item, i) => (
-          <tr key={item.id}>
-            <td>{i + 1}</td>
-            <td>{item.id}</td>
-            <td>{item._type}</td>
-            <td>{item.installation_date}</td>
-            <td>
-              {item.is_automatic === null
-                ? 'данных нет'
-                : item.is_automatic
-                ? 'Автоматический'
-                : 'Не автоматический'}
-            </td>
-            <td>{item.initial_values}</td>
-            <td>{item.description}</td>
-            <td>{item.area.id}</td>
-            <td>{item.address}</td>
-            <td>{item.house}</td>
+    <div className='table-container'>
+      <table>
+        <thead>
+          <tr>
+            <th>
+              <h5>№</h5>
+            </th>
+            <th>
+              <h5>Тип</h5>
+            </th>
+            <th>
+              <h5>Дата установки</h5>
+            </th>
+            <th>
+              <h5>Автоматический</h5>
+            </th>
+            <th>
+              <h5>Текущие показания</h5>
+            </th>
+            <th>
+              <h5>Адрес</h5>
+            </th>
+            <th>
+              <h5>Примечание</h5>
+            </th>
+            <th></th>
           </tr>
-        ))}
-      </tbody>
-      <button>next</button>
-      <button>prev</button>
-    </table>
+        </thead>
+        <tbody>
+          {/* {data.map((item, i) => (
+            <Meter
+              key={item.id}
+              item={item}
+              index={offset + i + 1}
+              deleteItem={deleteItem}
+            ></Meter>
+          ))} */}
+
+          {data.slice(0, 20).map((item, i) => (
+            <Meter
+              key={item.id}
+              item={item}
+              index={i + 1}
+              deleteItem={deleteItem}
+            />
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }

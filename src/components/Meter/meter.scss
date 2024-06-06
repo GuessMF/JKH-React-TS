@@ -1,0 +1,15 @@
+@import '../../assets/style/var';
+
+.meter {
+  padding: 0 6px;
+  width: 100%;
+  cursor: pointer;
+  background-color: $white;
+  &:hover {
+    background-color: $gray50;
+  }
+  td {
+    padding: 16px 12px;
+    border-bottom: 1px solid $gray100;
+  }
+}
