@@ -52,19 +52,10 @@ export default function Table() {
   const [page, setPage] = useState<number>(0);
   const [offset, setOffset] = useState<number>(0);
 
-  // const getConfigs = async () => {
-  //   try {
-  //     console.log('test');
-
-  //     console.log(await axios.get('/api/v4/test/meters/?limit=20&offset=0'));
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-  // getConfigs();
+  const [deleted, setDeleted] = useState<string[]>([]);
 
   const fetchData = async (page: number) => {
-    const limit = 20;
+    const limit = 20 + deleted.length;
     setOffset(page * limit);
 
     try {
@@ -87,7 +78,11 @@ export default function Table() {
         };
       });
 
-      setData(combinedData);
+      const filteredData = combinedData.filter(
+        (item) => !deleted.includes(item.id)
+      );
+
+      setData(filteredData);
       setLoading(false);
     } catch (error) {
       if (error instanceof Error) {
@@ -102,7 +97,7 @@ export default function Table() {
 
   useEffect(() => {
     fetchData(page);
-  }, [page]);
+  }, [page, deleted]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -112,23 +107,8 @@ export default function Table() {
     return <div>Error: {error.message}</div>;
   }
 
-  // const deleteItem = (id: string) => {
-  //   setData((prevData) => prevData.filter((item) => item.id !== id));
-  // };
-
-  // const deleteItem = (id: string) => {
-  //   setData((prevData) => {
-  //     const updatedData = prevData.filter((item) => item.id !== id);
-  //     // Если элементов меньше 20 после удаления, загрузить еще
-  //     if (updatedData.length < 20) {
-  //       fetchData(page);
-  //       setPage((prevPage) => prevPage + 1);
-  //     }
-  //     return updatedData;
-  //   });
-  // };
-  const deleteItem = async (id: string) => {
-    console.log(data.length);
+  const deleteItem = (id: string) => {
+    setDeleted([...deleted, id]);
   };
 
   return (
@@ -161,22 +141,13 @@ export default function Table() {
           </tr>
         </thead>
         <tbody>
-          {/* {data.map((item, i) => (
+          {data.map((item, i) => (
             <Meter
               key={item.id}
               item={item}
               index={offset + i + 1}
               deleteItem={deleteItem}
             ></Meter>
-          ))} */}
-
-          {data.slice(0, 20).map((item, i) => (
-            <Meter
-              key={item.id}
-              item={item}
-              index={i + 1}
-              deleteItem={deleteItem}
-            />
           ))}
         </tbody>
       </table>
