@@ -1,4 +1,3 @@
-import {useState} from 'react';
 import './app.scss';
 import Table from '../components/Table/Table';
 

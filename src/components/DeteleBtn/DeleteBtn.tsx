@@ -1,4 +1,3 @@
-import React from 'react';
 import './deleteBtn.scss';
 import deleteIcon from '../../assets/Icons/delete_icon.svg';
 
