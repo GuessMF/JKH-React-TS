@@ -109,6 +109,7 @@ export default function Table() {
 
   const deleteItem = (id: string) => {
     setDeleted([...deleted, id]);
+    setPage(page + 1);
   };
 
   return (
