@@ -7,9 +7,16 @@
   background-color: $white;
   &:hover {
     background-color: $gray50;
+    button {
+      opacity: 1;
+    }
   }
   td {
     padding: 16px 12px;
     border-bottom: 1px solid $gray100;
+  }
+  .type-img {
+    margin-right: 8px;
+    margin-bottom: 2px;
   }
 }

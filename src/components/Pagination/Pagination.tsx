@@ -1,15 +1,25 @@
 import './pagination.scss';
 
-export default function Pagination() {
+interface PaginationProps {
+  page: number;
+  setPage: (page: number) => void;
+}
+
+export default function Pagination({page, setPage}: PaginationProps) {
+  const numberOfPages = 7;
+  console.log(page);
+
   return (
     <div className='pagination'>
-      <button>1</button>
-      <button>2</button>
-      <button>3</button>
-      <button>4</button>
-      <button>5</button>
-      <button>6</button>
-      <button>7</button>
+      {Array.from({length: numberOfPages}, (_, index) => (
+        <button
+          key={index + 1}
+          onClick={() => setPage(index)}
+          className={page === index ? 'active' : ''}
+        >
+          {index + 1}
+        </button>
+      ))}
     </div>
   );
 }

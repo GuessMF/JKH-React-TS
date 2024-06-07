@@ -14,28 +14,13 @@ interface MeterProps {
     is_automatic: boolean | null;
     initial_values: number;
     description: string;
-    area: {
-      id: string;
-    };
+    area: string;
     address: string;
     house: string;
   };
   deleteItem: (id: string) => void;
 }
 
-// interface Meter {
-//   id: string;
-//   _type: string;
-//   installation_date: string;
-//   is_automatic: boolean | null;
-//   initial_values: number;
-//   description: string;
-//   area: {
-//     id: string;
-//   };
-//   address: string;
-//   house: string;
-// }
 export default function Meter({item, index, deleteItem}: MeterProps) {
   function formatDate(inputDate: string): string {
     const date = new Date(inputDate);
@@ -45,37 +30,31 @@ export default function Meter({item, index, deleteItem}: MeterProps) {
 
     return `${day}.${month}.${year}`;
   }
-  // console.log(item);
 
   return (
     <tr className='meter'>
       <td>{index}</td>
-      {/* <td>{item.id}</td> */}
       <td>
-        {/* {item._type[0]} */}
-
         <img
           src={
-            item._type[0] === 'HotWaterAreaMeter'
+            item._type === 'HotWaterAreaMeter'
               ? hot_icon
-              : item._type[0] === 'ColdWaterAreaMeter'
+              : item._type === 'ColdWaterAreaMeter'
               ? cold_icon
               : ''
           }
           alt='img'
+          className='type-img'
         />
-        <p>
-          {item._type[0] === 'HotWaterAreaMeter'
+        <span>
+          {item._type === 'HotWaterAreaMeter'
             ? 'ГВС'
-            : item._type[0] === 'ColdWaterAreaMeter'
+            : item._type === 'ColdWaterAreaMeter'
             ? 'ХВС'
             : 'no'}
-        </p>
+        </span>
       </td>
-      <td>
-        {/* {item.installation_date} */}
-        {formatDate(item.installation_date)}
-      </td>
+      <td>{formatDate(item.installation_date)}</td>
       <td>
         {item.is_automatic === null
           ? 'данных нет'
@@ -84,20 +63,15 @@ export default function Meter({item, index, deleteItem}: MeterProps) {
           : 'Не автоматический'}
       </td>
       <td>{item.initial_values}</td>
-
-      {/* <td>{item.area.id}</td> */}
       <td>
         {item.address !== 'Адрес не найден'
           ? `${item.address}, ${item.house}`
           : 'Адрес не найден'}
       </td>
       <td>{item.description}</td>
-      {/* <td>8</td>
-      <td>9</td>
-      <td>10</td> */}
+
       <td>
         <DeleteBtn deleteItem={deleteItem} id={item.id} />
-        {/* <button onClick={() => deleteItem(item.id)}>x</button> */}
       </td>
     </tr>
   );

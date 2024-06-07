@@ -1,19 +1,20 @@
+import {useState} from 'react';
 import './app.scss';
-import Table from '../components/Table/Table';
-
-// import { Provider } from 'mobx-react-lite';
-// import store from '../stores/index';
+import {Table} from '../components/Table/Table';
 import Pagination from '../components/Pagination/Pagination';
 
 function App() {
-  // const [page, setPage] = useState<number>(0);
+  const [page, setPage] = useState<number>(0);
+
+  const changePage = (page: number) => {
+    setPage(page);
+  };
 
   return (
     <div className='app'>
       <h1>Список счётчиков</h1>
-
-      <Table />
-      <Pagination />
+      <Table currentPage={page} />
+      <Pagination page={page} setPage={changePage} />
     </div>
   );
 }
